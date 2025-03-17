@@ -1,6 +1,11 @@
 from fastapi import FastAPI
 
-app = FastAPI()
+from config import settings
+
+app = FastAPI(
+    title=settings.app_settings.title,
+    debug=settings.app_settings.debug,
+)
 
 
 @app.get("/")
