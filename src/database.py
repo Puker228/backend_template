@@ -3,7 +3,7 @@ from sqlmodel import SQLModel
 
 from config import settings
 
-async_engine = create_async_engine(url=settings.database.db_url, echo=settings.database.echo)
+async_engine = create_async_engine(url=settings.database.db_url)
 
 AsyncSessionLocal = async_sessionmaker(
     bind=async_engine,
