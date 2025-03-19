@@ -1,7 +1,10 @@
-from sqlmodel import SQLModel, Field
+from sqlalchemy.orm import Mapped
+
+from database import Base
 
 
-class User(SQLModel, table=True):
-    id: int | None = Field(default=None, primary_key=True)
-    name: str
-    age: int
+class User(Base):
+    __tablename__ = "users"
+
+    name: Mapped[str]
+    age: Mapped[int]
