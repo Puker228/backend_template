@@ -1,47 +1,32 @@
-from dataclasses import dataclass
-
-from environs import Env
-
-
-@dataclass
-class Database:
-    db_name: str
-    db_user: str
-    db_pass: str
-    db_host: str
-    db_port: int
-    db_url: str
-
-@dataclass
-class AppSettings:
-    title: str
-    debug: bool
+from pydantic_core import MultiHostUrl
+from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
-@dataclass
-class Config:
-    app_settings: AppSettings
-    database: Database
-
-
-# функция, которая считывает данные с .env
-def load_config(path: str | None = None) -> Config:
-    env = Env()
-    env.read_env(path)
-    return Config(
-        app_settings=AppSettings(
-            title=env("SWAGGER_TITLE"),
-            debug=env("DEBUG"),
-        ),
-        database=Database(
-            db_name=env("DB_NAME"),
-            db_user=env("DB_USER"),
-            db_port=env("DB_PORT"),
-            db_pass=env("DB_PASS"),
-            db_host=env("DB_HOST"),
-            db_url=f"postgresql+asyncpg://{env.str('DB_USER')}:{env.str('DB_PASS')}@{env.str('DB_HOST')}:{env.str('DB_PORT')}/{env.str('DB_NAME')}",
-        ),
+class Settings(BaseSettings):
+    model_config = SettingsConfigDict(
+        env_file='../.env',
+        env_ignore_empty=True,
     )
 
+    POSTGRES_SERVER: str
+    POSTGRES_PORT: int
+    POSTGRES_USER: str
+    POSTGRES_PASSWORD: str
+    POSTGRES_DB: str
 
-settings = load_config()
+    @property
+    def SQLALCHEMY_DATABASE_URI(self):
+        return MultiHostUrl.build(
+            scheme="postgresql+asyncpg",
+            username=self.POSTGRES_USER,
+            password=self.POSTGRES_PASSWORD,
+            host=self.POSTGRES_SERVER,
+            port=self.POSTGRES_PORT,
+            path=self.POSTGRES_DB,
+        )
+
+    PROJECT_NAME: str
+    DEBUG: bool
+
+
+settings = Settings()

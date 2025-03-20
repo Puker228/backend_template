@@ -6,7 +6,7 @@ from sqlalchemy import pool
 
 from config import settings
 from database import Base
-
+# noinspection PyUnresolvedReferences
 from user.model import User
 
 # this is the Alembic Config object, which provides
@@ -18,7 +18,7 @@ config = context.config
 if config.config_file_name is not None:
     fileConfig(config.config_file_name)
 config.set_main_option(
-    "sqlalchemy.url", f"{settings.database.db_url}?async_fallback=True"
+    "sqlalchemy.url", f"{settings.SQLALCHEMY_DATABASE_URI}?async_fallback=True"
 )
 
 target_metadata = Base.metadata
