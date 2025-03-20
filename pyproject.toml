@@ -1,7 +1,7 @@
 [project]
 name = "backend-template"
 version = "0.1.0"
-description = ""
+description = "simple backend template using a FastAPI"
 authors = [
     {name = "danil",email = "karatelanalov@yandex.ru"}
 ]
