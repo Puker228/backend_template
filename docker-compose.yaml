@@ -42,5 +42,14 @@ services:
       timeout: 5s
       retries: 5
 
+  redis:
+    image: redis:7
+    container_name: redis
+    ports:
+      - "6379:6379"
+    command: [ "redis-server" ]
+    networks:
+      - app_network
+
 volumes:
   postgres_data:
