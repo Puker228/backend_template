@@ -14,16 +14,6 @@ class Base(DeclarativeBase):
     id: Mapped[int] = mapped_column(primary_key=True)
 
 
-async def create_db():
-    async with async_engine.begin() as conn:
-        await conn.run_sync(Base.metadata.create_all)
-
-
-async def drop_db():
-    async with async_engine.begin() as conn:
-        await conn.run_sync(SQLModel.metadata.drop_all)
-
-
 async def get_session_without_transaction():
     async with AsyncSessionLocal() as session:
         yield session
