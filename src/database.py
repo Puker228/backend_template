@@ -6,9 +6,7 @@ from config import settings
 async_engine = create_async_engine(url=settings.SQLALCHEMY_DATABASE_URI)
 
 AsyncSessionLocal = async_sessionmaker(
-    bind=async_engine,
-    class_=AsyncSession,
-    expire_on_commit=False
+    bind=async_engine, class_=AsyncSession, expire_on_commit=False
 )
 
 
