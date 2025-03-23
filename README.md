@@ -25,7 +25,7 @@ pip install poetry
 далее нужно установить все необходимые библиотеки
 
 ```
-poetry install
+poetry install --no-root
 ```
 
 ## работа с бд
