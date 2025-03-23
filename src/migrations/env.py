@@ -76,7 +76,9 @@ async def run_migrations_online():
 
 def do_run_migrations(connection):
     """Helper function to run migrations."""
-    context.configure(connection=connection, target_metadata=target_metadata, compare_type=True)
+    context.configure(
+        connection=connection, target_metadata=target_metadata, compare_type=True
+    )
 
     with context.begin_transaction():
         context.run_migrations()
