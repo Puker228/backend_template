@@ -15,9 +15,9 @@ services:
       db:
         condition: service_healthy
     environment:
-      POSTGRES_USER: ${DB_USER}
-      POSTGRES_PASSWORD: ${DB_PASS}
-      POSTGRES_DB: ${DB_NAME}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
     networks:
       - app_network
     env_file:
@@ -27,9 +27,9 @@ services:
     image: postgres:15
     container_name: db
     environment:
-      POSTGRES_USER: ${DB_USER}
-      POSTGRES_PASSWORD: ${DB_PASS}
-      POSTGRES_DB: ${DB_NAME}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
     ports:
       - "51213:5432"
     volumes:
@@ -37,7 +37,7 @@ services:
     networks:
       - app_network
     healthcheck:
-      test: [ 'CMD-SHELL', 'pg_isready -U ${DB_USER}' ]
+      test: [ 'CMD-SHELL', 'pg_isready -U ${POSTGRES_USER}' ]
       interval: 5s
       timeout: 5s
       retries: 5
