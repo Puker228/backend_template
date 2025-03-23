@@ -1,17 +1,15 @@
 import uvicorn
 from fastapi import FastAPI, HTTPException
 from loguru import logger
-from redis.asyncio import Redis
 
 from config import settings
+from redis_client import redis
 from user.schema import UserSchema
 
 app = FastAPI(
     title=settings.PROJECT_NAME,
     debug=settings.DEBUG,
 )
-
-redis = Redis(host=settings.REDIS_HOST, port=settings.REDIS_PORT, db=0)
 
 
 @app.post("/add_name")
@@ -27,7 +25,7 @@ async def get_name():
     name = await redis.get("name")
     if name is None:
         raise HTTPException(status_code=404, detail="Name not found")
-    return {"name": name.decode("utf-8")}  # Декодируем байты в строку
+    return {"name": name.decode("utf-8")}
 
 
 if __name__ == "__main__":
