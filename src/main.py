@@ -2,8 +2,8 @@ import uvicorn
 from fastapi import FastAPI, HTTPException
 from loguru import logger
 
-from config import settings
-from redis_client import redis
+from core.config import settings
+from core.redis_client import redis
 from user.schema import UserSchema
 
 app = FastAPI(

@@ -5,8 +5,8 @@ from alembic import context
 from sqlalchemy import pool
 from sqlalchemy.ext.asyncio import create_async_engine
 
-from config import settings
-from database import Base
+from core.config import settings
+from core.database import Base
 # noinspection PyUnresolvedReferences
 from user.model import User
 
