@@ -23,7 +23,7 @@ services:
     networks:
       - app_network
     env_file:
-      - .env.docker
+      - .env
 
   db:
     image: postgres:15
