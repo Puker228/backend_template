@@ -8,7 +8,7 @@ from sqlalchemy.ext.asyncio import create_async_engine
 from core.config import settings
 from core.database import Base
 # noinspection PyUnresolvedReferences
-from user.model import User
+from user.models import User
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
