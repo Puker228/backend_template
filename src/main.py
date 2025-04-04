@@ -4,7 +4,7 @@ from loguru import logger
 
 from core.config import settings
 from core.redis_client import redis
-from user.schema import UserSchema
+from user.schemas import UserSchema
 
 app = FastAPI(
     title=settings.PROJECT_NAME,
