@@ -8,6 +8,12 @@
 make up
 ```
 
+или
+
+```
+make dev
+```
+
 ## установка зависимостей
 
 для начала необходимо установить poetry
@@ -27,11 +33,26 @@ poetry install --no-root
 для создания миграций:
 
 ```
-alembic revision --autogenerate -m "init"  
+alembic revision --autogenerate -m "init"
 ```
 
-"прогон" миграций
+прогон миграций
 
 ```
 alembic upgrade head
+```
+
+
+## тесты
+
+запуск тестов
+
+```
+PYTHONPATH=src:tests pytest
+```
+
+или
+
+```
+make lint
 ```

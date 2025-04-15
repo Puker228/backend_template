@@ -163,3 +163,4 @@ cython_debug/
 
 *.rdb
 *.log.zip
+/src/auth/certs/
