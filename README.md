@@ -2,16 +2,16 @@
 
 ## запуск приложения
 
-Перед запуском приложения необходимо запустить редис-сервер командой
-
-```
-make redis
-```
-
 Само приложение запускается через make-файл командой
 
 ```
 make up
+```
+
+или
+
+```
+make dev
 ```
 
 ## установка зависимостей
@@ -33,11 +33,25 @@ poetry install --no-root
 для создания миграций:
 
 ```
-alembic revision --autogenerate -m "init"  
+alembic revision --autogenerate -m "init"
 ```
 
-"прогон" миграций
+прогон миграций
 
 ```
 alembic upgrade head
+```
+
+## тесты
+
+запуск тестов
+
+```
+PYTHONPATH=src:tests pytest
+```
+
+или
+
+```
+make lint
 ```
