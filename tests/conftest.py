@@ -15,7 +15,7 @@ async def reset_db():
     async with TestingSessionLocal() as session:
         # таблицы, без которых нельзя жить
         exclude_tables = {
-            "crowd_groups,",
+            "crowd_groups",
             "roles",
             "cities",
             "regions",
