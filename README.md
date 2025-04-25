@@ -4,13 +4,13 @@
 
 Приложение запускается через make-файл командой
 
-```
+```shell
 make up
 ```
 
 или
 
-```
+```shell
 make dev
 ```
 
@@ -18,13 +18,13 @@ make dev
 
 для начала необходимо установить poetry
 
-```
+```shell
 pip install poetry
 ```
 
 далее нужно установить все необходимые библиотеки
 
-```
+```shell
 poetry install --no-root
 ```
 
@@ -32,27 +32,26 @@ poetry install --no-root
 
 для создания миграций:
 
-```
+```shell
 alembic revision --autogenerate -m "init"
 ```
 
 прогон миграций
 
-```
+```shell
 alembic upgrade head
 ```
-
 
 ## тесты
 
 запуск тестов
 
-```
+```shell
 PYTHONPATH=src:tests pytest
 ```
 
-или
+## Запуск автоформатера
 
-```
+```shell
 make lint
 ```

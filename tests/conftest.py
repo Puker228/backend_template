@@ -1,13 +1,13 @@
 import asyncio
 
 import pytest
+from database import TestingSessionLocal
 from httpx import ASGITransport, AsyncClient
+from settings import test_settings
 from sqlalchemy import text
 
 from core.database import Base, get_session_without_transaction
-from database import TestingSessionLocal
 from main import app
-from settings import test_settings
 
 
 @pytest.fixture(autouse=True)

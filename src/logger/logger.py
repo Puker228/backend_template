@@ -2,6 +2,7 @@ from datetime import datetime
 
 from loguru import logger
 
+
 current_date = datetime.now().strftime("%Y-%m-%d")
 
 logger.add(
