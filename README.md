@@ -53,5 +53,5 @@ PYTHONPATH=src:tests pytest
 ## Запуск автоформатера
 
 ```shell
-make lint
+make format
 ```
