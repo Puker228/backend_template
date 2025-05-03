@@ -7,5 +7,5 @@ dev:
 test:
 	@PYTHONPATH=src:tests pytest
 
-lint:
+format:
 	@black . && isort .
