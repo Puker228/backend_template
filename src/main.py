@@ -6,6 +6,7 @@ from core.config import settings
 from core.redis_client import redis
 from user.schemas import UserSchema
 
+
 app = FastAPI(
     title=settings.PROJECT_NAME,
     debug=settings.DEBUG,
