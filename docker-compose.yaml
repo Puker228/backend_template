@@ -16,6 +16,8 @@ services:
         condition: service_healthy
       redis:
         condition: service_healthy
+      minio:
+        condition: service_started
     environment:
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
@@ -25,11 +27,11 @@ services:
     networks:
       - app_network
     env_file:
-      - .env.docker
+      - .env
 
   db:
     image: postgres:15
-    container_name: db
+    container_name: backend-db
     environment:
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
@@ -48,7 +50,7 @@ services:
 
   redis:
     image: redis:7
-    container_name: redis
+    container_name: backend-redis
     ports:
       - "${REDIS_PORT}:6379"
     command: [ "redis-server" ]
@@ -57,11 +59,44 @@ services:
     networks:
       - app_network
     healthcheck:
-      test: [ "CMD", "redis-cli", "ping" ]
+      test: [ "CMD-SHELL", "redis-cli", "ping" ]
       interval: 5s
-      timeout: 3s
+      timeout: 5s
       retries: 5
+
+  minio:
+    image: quay.io/minio/minio
+    container_name: backend-minio
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    volumes:
+      - minio_data:/data
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD}
+    command: server /data --console-address ":9001"
+    networks:
+      - app_network
+
+  pgadmin:
+    image: dpage/pgadmin4:9.4
+    container_name: backend-pgadmin
+    ports:
+      - "5050:5050"
+    environment:
+      PGADMIN_DEFAULT_EMAIL: user@domain.com
+      PGADMIN_DEFAULT_PASSWORD: SuperSecret
+      PGADMIN_LISTEN_PORT: 5050
+    networks:
+      - app_network
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    depends_on:
+      db:
+        condition: service_healthy
 
 volumes:
   postgres_data:
   redis_data:
+  minio_data:
