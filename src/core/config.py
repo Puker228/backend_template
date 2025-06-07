@@ -4,7 +4,6 @@ from pydantic import computed_field
 from pydantic_core import MultiHostUrl
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
-
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
 
@@ -38,10 +37,18 @@ class Settings(BaseSettings):
     # app settings
     PROJECT_NAME: str
     DEBUG: bool
+    SUPERADMIN_PASSWORD: str
+    SUPERADMIN_EMAIL: str
 
     # redis settings
     REDIS_HOST: str
     REDIS_PORT: int
+
+    # minio
+    MINIO_ROOT_USER: str
+    MINIO_ROOT_PASSWORD: str
+    MINIO_BUCKET: str
+    MINIO_URL: str
 
 
 settings = Settings()
