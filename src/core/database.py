@@ -1,4 +1,8 @@
-from config import settings
+import uuid
+from datetime import datetime
+
+from fastapi import Request
+from sqlalchemy import text
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
 
@@ -13,9 +17,20 @@ AsyncSessionLocal = async_sessionmaker(
 
 
 class Base(DeclarativeBase):
-    id: Mapped[int] = mapped_column(primary_key=True)
+    id: Mapped[uuid.UUID] = mapped_column(
+        default=uuid.uuid4, primary_key=True, nullable=False, index=True
+    )
+    created_at: Mapped[datetime] = mapped_column(default=datetime.now, nullable=False)
+    updated_at: Mapped[datetime] = mapped_column(default=datetime.now, nullable=False)
+    deleted_at: Mapped[datetime] = mapped_column(nullable=True)
 
 
-async def get_session_without_transaction():
-    async with AsyncSessionLocal() as session:
-        yield session
+def get_session(request: Request) -> AsyncSession:
+    return request.state.db
+
+
+async def clear_database():
+    async with async_engine.begin() as conn:
+        for table in reversed(Base.metadata.sorted_tables):
+            await conn.execute(text(f"TRUNCATE {table.name} RESTART IDENTITY CASCADE"))
+        await conn.commit()

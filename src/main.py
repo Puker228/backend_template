@@ -1,32 +1,35 @@
+from contextlib import asynccontextmanager
+
 import uvicorn
-from fastapi import FastAPI, HTTPException
-from loguru import logger
+from fastapi import FastAPI
 
+from api.v1.routers import api_v1_router
 from core.config import settings
-from core.redis_client import redis
-from user.schemas import UserSchema
+from core.database import clear_database
+from core.middlewares import SQLAlchemySessionMiddleware
+from scripts.init_data import init_superuser
 
 
-app = FastAPI(
-    title=settings.PROJECT_NAME,
-    debug=settings.DEBUG,
-)
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    await init_superuser()
+    yield
 
 
-@app.post("/add_name")
-async def add_name(name_model: UserSchema):
-    logger.info("Adding name to Redis")
-    await redis.set("name", name_model.name)
-    return {"message": f"Name '{name_model.name}' added to Redis."}
+app = FastAPI(title=settings.PROJECT_NAME, debug=settings.DEBUG, lifespan=lifespan)
+app.include_router(api_v1_router)
+app.add_middleware(SQLAlchemySessionMiddleware)
 
 
-@app.get("/names")
-async def get_name():
-    logger.info("Retrieving name from Redis")
-    name = await redis.get("name")
-    if name is None:
-        raise HTTPException(status_code=404, detail="Name not found")
-    return {"name": name.decode("utf-8")}
+@app.post("/clear-db")
+async def clear():
+    await clear_database()
+    return {"message": "db cleared"}
+
+
+@app.get("/health-check")
+async def health_check():
+    return {"status": "ok"}
 
 
 if __name__ == "__main__":
@@ -34,5 +37,5 @@ if __name__ == "__main__":
         "main:app",
         host="0.0.0.0",
         port=8000,
-        reload=False,
+        reload=True,
     )
