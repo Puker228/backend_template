@@ -22,16 +22,12 @@ make docker
 
 ## установка зависимостей
 
-для начала необходимо установить poetry
+Для начала необходимо установить [uv](https://docs.astral.sh/uv/getting-started/installation/)
+
+Далее нужно установить все необходимые библиотеки
 
 ```shell
-pip install poetry
-```
-
-далее нужно установить все необходимые библиотеки
-
-```shell
-poetry install --no-root
+uv sync
 ```
 
 ## работа с бд

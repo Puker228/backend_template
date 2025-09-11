@@ -13,6 +13,10 @@ class Settings(BaseSettings):
         env_ignore_empty=True,
     )
 
+    # init
+    SUPERADMIN_EMAIL: str
+    SUPERADMIN_PASSWORD: str
+
     # db settings
     POSTGRES_SERVER: str
     POSTGRES_PORT: int
@@ -37,18 +41,21 @@ class Settings(BaseSettings):
     # app settings
     PROJECT_NAME: str
     DEBUG: bool
-    SUPERADMIN_PASSWORD: str
-    SUPERADMIN_EMAIL: str
 
     # redis settings
     REDIS_HOST: str
     REDIS_PORT: int
 
-    # minio
+    # s3_media
     MINIO_ROOT_USER: str
     MINIO_ROOT_PASSWORD: str
     MINIO_BUCKET: str
     MINIO_URL: str
+    MINIO_SEND_URL: str
+
+    # pgadmin web
+    PGADMIN_DEFAULT_EMAIL: str
+    PGADMIN_DEFAULT_PASSWORD: str
 
 
 settings = Settings()

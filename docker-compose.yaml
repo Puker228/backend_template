@@ -2,7 +2,6 @@ networks:
   app_network:
     driver: bridge
 
-
 services:
   backend:
     build:
@@ -10,7 +9,7 @@ services:
       dockerfile: Dockerfile
     container_name: backend
     ports:
-      - "8000:8000"
+      - "8001:8001"
     depends_on:
       db:
         condition: service_healthy
@@ -30,7 +29,7 @@ services:
       - .env
 
   db:
-    image: postgres:15
+    image: postgres:15-alpine3.21
     container_name: backend-db
     environment:
       POSTGRES_USER: ${POSTGRES_USER}
@@ -43,29 +42,29 @@ services:
     networks:
       - app_network
     healthcheck:
-      test: [ 'CMD-SHELL', 'pg_isready -U ${POSTGRES_USER}' ]
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER}"]
       interval: 5s
       timeout: 5s
       retries: 5
 
   redis:
-    image: redis:7
+    image: redis:7-alpine3.21
     container_name: backend-redis
     ports:
       - "${REDIS_PORT}:6379"
-    command: [ "redis-server" ]
+    command: ["redis-server"]
     volumes:
       - redis_data:/data
     networks:
       - app_network
     healthcheck:
-      test: [ "CMD-SHELL", "redis-cli", "ping" ]
+      test: ["CMD-SHELL", "redis-cli", "ping"]
       interval: 5s
       timeout: 5s
       retries: 5
 
   minio:
-    image: quay.io/minio/minio
+    image: quay.io/minio/minio:RELEASE.2025-07-23T15-54-02Z
     container_name: backend-minio
     ports:
       - "9000:9000"
@@ -85,8 +84,8 @@ services:
     ports:
       - "5050:5050"
     environment:
-      PGADMIN_DEFAULT_EMAIL: user@domain.com
-      PGADMIN_DEFAULT_PASSWORD: SuperSecret
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD}
       PGADMIN_LISTEN_PORT: 5050
     networks:
       - app_network

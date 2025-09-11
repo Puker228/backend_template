@@ -5,15 +5,14 @@ import os
 import pytest
 from alembic import command
 from alembic.config import Config
-
-from core.database import get_session
 from database import TestingSessionLocal
 from httpx import AsyncClient
+from settings import test_settings
 from sqlalchemy import text
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from core.database import get_session
 from main import app
-from settings import test_settings
 
 logger = logging.getLogger(__name__)
 

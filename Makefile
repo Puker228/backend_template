@@ -8,13 +8,10 @@ test:
 	@PYTHONPATH=src:tests pytest
 
 format:
-	@black . && isort .
+	@ruff check --select I,F401 --fix && ruff format
 
 docker:
-	@docker-compose up -d
-
-restart:
-	@docker-compose stop && docker-compose build && docker-compose up -d
+	@docker compose build && docker compose down && docker compose up -d
 
 stop:
-	@docker-compose stop
+	@docker compose stop

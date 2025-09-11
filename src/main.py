@@ -3,6 +3,7 @@ from contextlib import asynccontextmanager
 import uvicorn
 from fastapi import FastAPI
 
+import models  # noqa: F401
 from api.v1.routers import api_v1_router
 from core.config import settings
 from core.database import clear_database
@@ -33,9 +34,4 @@ async def health_check():
 
 
 if __name__ == "__main__":
-    uvicorn.run(
-        "main:app",
-        host="0.0.0.0",
-        port=8000,
-        reload=True,
-    )
+    uvicorn.run("main:app", host="0.0.0.0", port=8001, reload=False, workers=1)
