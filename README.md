@@ -8,18 +8,6 @@
 make up
 ```
 
-или
-
-```shell
-make dev
-```
-
-или
-
-```shell
-make docker
-```
-
 ## установка зависимостей
 
 Для начала необходимо установить [uv](https://docs.astral.sh/uv/getting-started/installation/)
@@ -49,7 +37,7 @@ alembic upgrade head
 запуск тестов
 
 ```shell
-PYTHONPATH=src:tests pytest
+make format
 ```
 
 ## Запуск автоформатера
