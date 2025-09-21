@@ -3,7 +3,7 @@ COPY --from=ghcr.io/astral-sh/uv:0.8.14 /uv /uvx /bin/
 
 ENV PYTHONUNBUFFERED=1
 
-WORKDIR /backend/src
+WORKDIR /backend
 
 COPY pyproject.toml uv.lock /backend/
 
@@ -31,4 +31,4 @@ ENV PATH="/backend/.venv/bin:$PATH"
 
 EXPOSE 8001
 
-CMD ["sh", "-c", "alembic upgrade head && python main.py"]
+CMD ["sh", "-c", "cd src && alembic upgrade head && python main.py"]
