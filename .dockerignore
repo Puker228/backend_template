@@ -14,3 +14,9 @@ LICENSE
 Makefile
 README.md
 setup.cfg
+.gitlab-ci.yml
+.github
+.gitignore
+.ruff_cache
+.env-example
+.dockerignore
