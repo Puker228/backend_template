@@ -1,4 +1,7 @@
+import json
+
 from loguru import logger
+from minio import Minio
 from sqlalchemy import select
 
 from auth.utils import hash_password
@@ -27,3 +30,37 @@ async def init_superuser():
         session.add(new_superuser)
         await session.commit()
         logger.info("Superadmin is created")
+
+
+async def init_buckets():
+    client = Minio(
+        endpoint=settings.MINIO_URL,
+        access_key=settings.MINIO_ROOT_USER,
+        secret_key=settings.MINIO_ROOT_PASSWORD,
+        secure=False,
+    )
+
+    policy = {
+        "Version": "2012-10-17",
+        "Statement": [
+            {
+                "Effect": "Allow",
+                "Principal": {"AWS": "*"},
+                "Action": ["s3:GetBucketLocation", "s3:ListBucket"],
+                "Resource": f"arn:aws:s3:::{settings.MINIO_BUCKET}",
+            },
+            {
+                "Effect": "Allow",
+                "Principal": {"AWS": "*"},
+                "Action": "s3:GetObject",
+                "Resource": f"arn:aws:s3:::{settings.MINIO_BUCKET}/*",
+            },
+        ],
+    }
+
+    if not client.bucket_exists(settings.MINIO_BUCKET):
+        client.make_bucket(settings.MINIO_BUCKET)
+        client.set_bucket_policy(settings.MINIO_BUCKET, json.dumps(policy))
+        logger.info("новый бакет инициализирован")
+    else:
+        logger.info("бакет уже был создан")

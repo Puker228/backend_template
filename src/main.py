@@ -8,12 +8,13 @@ from api.v1.routers import api_v1_router
 from core.config import settings
 from core.database import clear_database
 from core.middlewares import SQLAlchemySessionMiddleware
-from scripts.init_data import init_superuser
+from scripts.init_data import init_buckets, init_superuser
 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     await init_superuser()
+    await init_buckets()
     yield
 
 
