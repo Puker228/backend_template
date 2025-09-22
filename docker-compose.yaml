@@ -17,19 +17,13 @@ services:
         condition: service_healthy
       minio:
         condition: service_started
-    environment:
-      POSTGRES_USER: ${POSTGRES_USER}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-      POSTGRES_DB: ${POSTGRES_DB}
-      REDIS_HOST: ${REDIS_HOST}
-      REDIS_PORT: ${REDIS_PORT}
     networks:
       - app_network
     env_file:
       - .env
 
   db:
-    image: postgres:15-alpine3.21
+    image: postgres:17-alpine3.22
     container_name: backend-db
     environment:
       POSTGRES_USER: ${POSTGRES_USER}
@@ -48,7 +42,7 @@ services:
       retries: 5
 
   redis:
-    image: redis:7-alpine3.21
+    image: redis:8.2-alpine3.22
     container_name: backend-redis
     ports:
       - "${REDIS_PORT}:6379"
@@ -64,7 +58,7 @@ services:
       retries: 5
 
   minio:
-    image: quay.io/minio/minio:RELEASE.2025-07-23T15-54-02Z
+    image: quay.io/minio/minio:RELEASE.2025-09-07T16-13-09Z
     container_name: backend-minio
     ports:
       - "9000:9000"
@@ -79,7 +73,7 @@ services:
       - app_network
 
   pgadmin:
-    image: dpage/pgadmin4:9.4
+    image: dpage/pgadmin4:9.8
     container_name: backend-pgadmin
     ports:
       - "5050:5050"
@@ -90,7 +84,8 @@ services:
     networks:
       - app_network
     volumes:
-      - postgres_data:/var/lib/postgresql/data
+      - pgadmin_data:/var/lib/postgresql/data
+      - ./servers.json:/pgadmin4/servers.json
     depends_on:
       db:
         condition: service_healthy
@@ -99,3 +94,4 @@ volumes:
   postgres_data:
   redis_data:
   minio_data:
+  pgadmin_data:
