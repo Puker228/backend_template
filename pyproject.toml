@@ -16,6 +16,7 @@ dependencies = [
     "loguru>=0.7.3",
     "minio>=7.2.16",
     "redis>=6.4.0",
+    "sentry-sdk[fastapi]>=2.37.1",
     "sqlalchemy>=2.0.43",
 ]
 
