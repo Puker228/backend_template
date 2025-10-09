@@ -1,4 +1,5 @@
 from pathlib import Path
+from typing import Optional
 
 from pydantic import computed_field
 from pydantic_core import MultiHostUrl
@@ -41,6 +42,10 @@ class Settings(BaseSettings):
     # app settings
     PROJECT_NAME: str
     DEBUG: bool
+
+    # sentry
+    SENTRY_DSN: Optional[str]
+    SENTRY_ENVIRONMENT: Optional[str]
 
     # redis settings
     REDIS_HOST: str

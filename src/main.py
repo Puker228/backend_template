@@ -1,5 +1,6 @@
 from contextlib import asynccontextmanager
 
+import sentry_sdk
 import uvicorn
 from fastapi import FastAPI
 
@@ -9,6 +10,15 @@ from core.config import settings
 from core.database import clear_database
 from core.middlewares import SQLAlchemySessionMiddleware
 from scripts.init_data import init_buckets, init_superuser
+
+if settings.SENTRY_DSN is not None:
+    sentry_sdk.init(
+        dsn=settings.SENTRY_DSN,
+        # Add data like request headers and IP for users,
+        # see https://docs.sentry.io/platforms/python/data-management/data-collected/ for more info
+        send_default_pii=True,
+        environment=settings.SENTRY_ENVIRONMENT,
+    )
 
 
 @asynccontextmanager
