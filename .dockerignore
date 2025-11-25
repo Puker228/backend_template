@@ -20,3 +20,6 @@ setup.cfg
 .ruff_cache
 .env-example
 .dockerignore
+.DS_Store
+src/project_logs/logs
+docker-compose.yaml

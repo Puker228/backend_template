@@ -10,8 +10,10 @@ requires-python = ">=3.11"
 dependencies = [
     "alembic>=1.16.5",
     "asyncpg>=0.30.0",
+    "authx>=1.4.3",
     "bcrypt>=4.3.0",
     "fastapi[all]>=0.116.1",
+    "faststream[rabbit]>=0.6.3",
     "greenlet>=3.2.4",
     "loguru>=0.7.3",
     "minio>=7.2.16",
