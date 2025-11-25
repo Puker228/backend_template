@@ -1,0 +1,67 @@
+stages:
+  - build
+  - deploy
+
+default:
+  image: docker:28.5.1
+  before_script:
+    - echo "Login in DockerHub"
+    - echo "${DOCKERHUB_TOKEN}" | docker login -u "${DOCKERHUB_USERNAME}" --password-stdin
+    - echo "Generating .env file from CI/CD variables"
+    - |
+      cat <<EOF > .env
+      POSTGRES_USER=$POSTGRES_USER
+      POSTGRES_PASSWORD=$POSTGRES_PASSWORD
+      POSTGRES_DB=$POSTGRES_DB
+      REDIS_HOST=$REDIS_HOST
+      REDIS_PORT=$REDIS_PORT
+      MINIO_ROOT_USER=$MINIO_ROOT_USER
+      MINIO_ROOT_PASSWORD=$MINIO_ROOT_PASSWORD
+      POSTGRES_SERVER=$POSTGRES_SERVER
+      POSTGRES_PORT=$POSTGRES_PORT
+      PROJECT_NAME=$PROJECT_NAME
+      DEBUG=$DEBUG
+      MINIO_BUCKET=$MINIO_BUCKET
+      MINIO_URL=$MINIO_URL
+      MINIO_SEND_URL=$MINIO_SEND_URL
+      PGADMIN_DEFAULT_EMAIL=$PGADMIN_DEFAULT_EMAIL
+      PGADMIN_DEFAULT_PASSWORD=$PGADMIN_DEFAULT_PASSWORD
+      JWT_SECRET_KEY=$JWT_SECRET_KEY
+      WORKERS=$WORKERS
+      SENTRY_DSN=$SENTRY_DSN
+      SENTRY_ENVIRONMENT=$SENTRY_ENVIRONMENT
+      RABBIT_USER=$RABBIT_USER
+      RABBIT_PASS=$RABBIT_PASS
+      EOF
+
+
+variables:
+  DOCKERHUB_IMAGE: $DOCKERHUB_USERNAME/PROJECT_NAME
+  DOCKERHUB_USERNAME: $DOCKERHUB_USERNAME
+  DOCKERHUB_PASSWORD: $DOCKERHUB_PASSWORD
+
+build-job:
+  stage: build
+  script:
+    - docker build -t $DOCKERHUB_IMAGE:$CI_PIPELINE_IID .
+    - docker push $DOCKERHUB_IMAGE:$CI_PIPELINE_IID
+    - echo "IMAGE_TAG=$CI_PIPELINE_IID" > image_tag.env
+  artifacts:
+    reports:
+      dotenv: image_tag.env
+
+deploy-job:
+  stage: deploy
+  needs: [ "build-job" ]
+  script:
+    - echo "Deploying application..."
+    - >
+      if docker network ls --format "{{.Name}}" | grep backend_network; then \
+        echo "Network 'backend_network' already exists"; \
+      else \
+        echo "Creating network 'backend_network'..."; \
+        docker network create backend_network; \
+      fi
+    - docker compose -f docker-compose.prod.yaml pull
+    - docker compose -f docker-compose.prod.yaml up -d --remove-orphans
+    - echo "Done."

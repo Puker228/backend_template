@@ -1,7 +1,7 @@
 from pathlib import Path
 from typing import Optional
 
-from pydantic import computed_field
+from pydantic import EmailStr, HttpUrl, computed_field
 from pydantic_core import MultiHostUrl
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
@@ -12,10 +12,11 @@ class Settings(BaseSettings):
     model_config = SettingsConfigDict(
         env_file=BASE_DIR / ".env",
         env_ignore_empty=True,
+        extra="ignore",
     )
 
     # init
-    SUPERADMIN_EMAIL: str
+    SUPERADMIN_EMAIL: EmailStr
     SUPERADMIN_PASSWORD: str
 
     # db settings
@@ -40,12 +41,14 @@ class Settings(BaseSettings):
         )
 
     # app settings
-    PROJECT_NAME: str
-    DEBUG: bool
+    PROJECT_NAME: str = "Name"
+    DEBUG: bool = True
+    WORKERS: int = 1
+    JWT_SECRET_KEY: str
 
     # sentry
-    SENTRY_DSN: Optional[str]
-    SENTRY_ENVIRONMENT: Optional[str]
+    SENTRY_DSN: Optional[HttpUrl] = None
+    SENTRY_ENVIRONMENT: Optional[str] = None
 
     # redis settings
     REDIS_HOST: str
@@ -59,8 +62,11 @@ class Settings(BaseSettings):
     MINIO_SEND_URL: str
 
     # pgadmin web
-    PGADMIN_DEFAULT_EMAIL: str
+    PGADMIN_DEFAULT_EMAIL: EmailStr
     PGADMIN_DEFAULT_PASSWORD: str
 
+    RABBIT_USER: str
+    RABBIT_PASS: str
 
-settings = Settings()
+
+settings = Settings()  # type: ignore

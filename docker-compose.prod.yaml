@@ -5,10 +5,7 @@ networks:
 
 services:
   backend:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    container_name: backend-app
+    image: ${DOCKERHUB_IMAGE}:${IMAGE_TAG}
     ports:
       - "8001:8001"
     depends_on:
@@ -24,34 +21,29 @@ services:
       - backend_network
     env_file:
       - .env
-    environment:
-      TZ: Europe/Moscow
+    restart: always
 
   db:
     image: postgres:17-alpine3.22
-    container_name: backend-db
     environment:
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       POSTGRES_DB: ${POSTGRES_DB}
-      TZ: Europe/Moscow
-    ports:
-      - "51214:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
     networks:
       - backend_network
+    ports:
+      - "5432:5432"
     healthcheck:
       test: [ 'CMD-SHELL', 'pg_isready -U ${POSTGRES_USER}' ]
       interval: 5s
       timeout: 5s
       retries: 5
+    restart: always
 
   redis:
     image: redis:8.2-alpine3.22
-    container_name: findhousebackend-redis
-    ports:
-      - "${REDIS_PORT}:6379"
     command: [ "redis-server" ]
     volumes:
       - redis_data:/data
@@ -62,12 +54,10 @@ services:
       interval: 5s
       timeout: 5s
       retries: 5
-    environment:
-      TZ: Europe/Moscow
+    restart: always
 
   minio:
     image: quay.io/minio/minio:RELEASE.2025-09-07T16-13-09Z
-    container_name: backend-minio
     ports:
       - "9000:9000"
       - "9001:9001"
@@ -76,7 +66,6 @@ services:
     environment:
       MINIO_ROOT_USER: ${MINIO_ROOT_USER}
       MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD}
-      TZ: Europe/Moscow
     command: server /data --console-address ":9001"
     healthcheck:
       test: [ "CMD", "curl", "-fsS", "http://localhost:9000/minio/health/live" ]
@@ -85,17 +74,16 @@ services:
       retries: 5
     networks:
       - backend_network
+    restart: always
 
   pgadmin:
     image: dpage/pgadmin4:9.10
-    container_name: backend-pgadmin
     ports:
       - "5050:5050"
     environment:
       PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL}
       PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD}
       PGADMIN_LISTEN_PORT: 5050
-      TZ: Europe/Moscow
     networks:
       - backend_network
     volumes:
@@ -104,20 +92,21 @@ services:
     depends_on:
       db:
         condition: service_healthy
+    restart: always
 
   rabbitmq:
     image: rabbitmq:4-management
-    container_name: backend-rabbitmq
     networks:
       - backend_network
     ports:
       - "5672:5672"
       - "15672:15672"
-    volumes:
-      - rabbitmq_data:/var/lib/rabbitmq
     environment:
       RABBITMQ_DEFAULT_USER: ${RABBIT_USER}
       RABBITMQ_DEFAULT_PASS: ${RABBIT_PASS}
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
+    restart: always
     healthcheck:
       test: [ "CMD", "rabbitmq-diagnostics", "-q", "alarms" ]
       interval: 10s
